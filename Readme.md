@@ -7,7 +7,8 @@ This a redo of my previous ostree-zfs-kmods, this is a derivation is a downstrea
 The `zfs-atomic-kmod-build` workflow is set to run daily at 7:00 UTC, attempting to ensure a new build is produced after the latest and previous stable images of `quay.io/fedora/fedora-minimal` have been published.
 
 ## Features
-Nothing special just `zfs-2.3.x`.
+Nothing special just `zfs-2.3.x`. The main goal is to provide an easy way
+reproduce this repo and build the zfs modules. 
 
 ### NOTE: the ZFS kmods are not yet signed to enable secure boot
 ### NOTE: that the `*.tar.gz` source files are not cryptographically verified, which may pose a security risk due to the lack of integrity and authenticity checks.
