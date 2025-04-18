@@ -11,7 +11,7 @@ ARG BUILDER_IMAGE="quay.io/fedora/fedora-minimal"
 ARG BUILDER_IMAGE="${BUILDER_IMAGE}"
 
 ARG BUILDER_BASE="${BUILDER_IMAGE}:${FEDORA_MAJOR_VERSION}"
-FROM ${BUILDER_BASE} AS builder
+FROM ${BUILDER_BASE} AS zfs-atomic-kmod
 
 # allow pinning to a specific release series (eg, 2.2.x or 2.3.x)
 ARG ZFS_MINOR_VERSION="2.3"
