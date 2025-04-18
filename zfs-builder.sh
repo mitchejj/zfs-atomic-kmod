@@ -16,7 +16,7 @@ sed -i 's@enabled=1@enabled=0@g' /etc/yum.repos.d/fedora-cisco-openh264.repo
 # KERNEL="$(rpm -q kernel --queryformat '%{VERSION}-%{RELEASE}.%{ARCH}')"
 
 # fedora image has no kernel, install with some tooling
-dnf install -y --no-docs \
+dnf install -y \
   kernel \
   kernel-headers \
   akmods \
@@ -26,8 +26,7 @@ dnf install -y --no-docs \
   git \
   jq \
   libtool \
-  ncompress \
-  --setopt=install_weak_deps=False
+  ncompress
 
 # protect against incorrect permissions in tmp dirs which can break akmods builds
 chmod 1777 /tmp /var/tmp
@@ -60,9 +59,9 @@ curl -L -O "https://github.com/openzfs/zfs/releases/download/zfs-${ZFS_VERSION}/
 tar -z -x --no-same-owner --no-same-permissions -f zfs-${ZFS_VERSION}.tar.gz
 
 # patch the zfs-kmod.spec.in file for older zfs versions
-ZFS_MAJ=$(echo $ZFS_VERSION | cut -f1 -d.)
-ZFS_MIN=$(echo $ZFS_VERSION | cut -f2 -d.)
-ZFS_PATCH=$(echo $ZFS_VERSION | cut -f3 -d.)
+# ZFS_MAJ=$(echo $ZFS_VERSION | cut -f1 -d.)
+# ZFS_MIN=$(echo $ZFS_VERSION | cut -f2 -d.)
+# ZFS_PATCH=$(echo $ZFS_VERSION | cut -f3 -d.)
 
 KERNEL="$(rpm -q kernel --queryformat '%{VERSION}-%{RELEASE}.%{ARCH}')"
 cd /tmp/zfs-${ZFS_VERSION}
