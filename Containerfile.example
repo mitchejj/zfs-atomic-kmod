@@ -1,0 +1,14 @@
+ARG FEDORA_MAJOR_VERSION=42
+ARG BASE_IMAGE_URL=quay.io/fedora-ostree-desktops/base-atomic
+
+FROM ${BASE_IMAGE_URL}:${FEDORA_MAJOR_VERSION} as builder
+
+ARG FEDORA_MAJOR_VERSION
+ARG ZFS_KMODS_TAG=${FEDORA_MAJOR_VERSION}
+COPY --from=ghcr.io/mitchejj/zfs-atomic-kmod:${ZFS_KMODS_TAG} rpms/kmods/* /tmp/zfs/
+
+RUN dnf install -y /tmp/zfs/*.rpm && \
+  KERNEL="$(rpm -q kernel --queryformat '%{VERSION}-%{RELEASE}.%{ARCH}')" && \
+  depmod -A ${KERNEL}
+
+
