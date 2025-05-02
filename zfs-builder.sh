@@ -16,17 +16,13 @@ sed -i 's@enabled=1@enabled=0@g' /etc/yum.repos.d/fedora-cisco-openh264.repo
 # KERNEL="$(rpm -q kernel --queryformat '%{VERSION}-%{RELEASE}.%{ARCH}')"
 
 # fedora image has no kernel, install with some tooling
-dnf install -y \
+dnf install -y --setopt=install_weak_deps=false \
   kernel \
   kernel-headers \
   akmods \
-  autoconf \
-  automake \
   dkms \
-  git \
   jq \
-  libtool \
-  ncompress
+  libtool 
 
 # protect against incorrect permissions in tmp dirs which can break akmods builds
 chmod 1777 /tmp /var/tmp
@@ -39,18 +35,29 @@ echo "ZFS_VERSION==$ZFS_VERSION"
 
 ### zfs specific build deps
 dnf install -y \
+  autoconf \
+  automake \
   elfutils-libelf-devel \
+  gcc \
+  git \
   libaio-devel \
   libattr-devel \
   libblkid-devel \
   libcurl-devel \
   libffi-devel \
   libtirpc-devel \
+  libtool \
   libudev-devel \
   libuuid-devel \
+  make \
+  ncompress \
   openssl-devel \
+  python3 \
+  python3-cffi \
   python3-devel \
-  python3-setuptools
+  python3-setuptools \
+  rpm-build \
+  zlib-devel \
 
 ### BUILD zfs
 echo "getting zfs-${ZFS_VERSION}.tar.gz"
@@ -59,17 +66,17 @@ curl -L -O "https://github.com/openzfs/zfs/releases/download/zfs-${ZFS_VERSION}/
 tar -z -x --no-same-owner --no-same-permissions -f zfs-${ZFS_VERSION}.tar.gz
 
 # patch the zfs-kmod.spec.in file for older zfs versions
-# ZFS_MAJ=$(echo $ZFS_VERSION | cut -f1 -d.)
-# ZFS_MIN=$(echo $ZFS_VERSION | cut -f2 -d.)
-# ZFS_PATCH=$(echo $ZFS_VERSION | cut -f3 -d.)
+ZFS_MAJ=$(echo $ZFS_VERSION | cut -f1 -d.)
+ZFS_MIN=$(echo $ZFS_VERSION | cut -f2 -d.)
+ZFS_PATCH=$(echo $ZFS_VERSION | cut -f3 -d.)
 
 KERNEL="$(rpm -q kernel --queryformat '%{VERSION}-%{RELEASE}.%{ARCH}')"
 cd /tmp/zfs-${ZFS_VERSION}
 ./configure \
         -with-linux=/usr/src/kernels/${KERNEL}/ \
         -with-linux-obj=/usr/src/kernels/${KERNEL}/ \
-    && make -j $(nproc) rpm-utils rpm-kmod
-
+    && make -j $(nproc) rpm-utils rpm-kmod \
+    ||  exit 1
 
 # create a directory for later copying of resulting zfs specific artifacts
 mkdir -p /var/cache/rpms/kmods/zfs/{debug,devel,other,src} \
