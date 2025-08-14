@@ -26,7 +26,7 @@ jobs:
       fail-fast: false
       matrix:
         base_name: [zfs-atomic-kmod]
-        major_version: [41, 42, 42]
+        major_version: [41, 42, 43]
         include:
           - major_version: 41
             is_latest_version: false
