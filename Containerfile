@@ -9,7 +9,7 @@ ARG BUILDER_BASE="${BUILDER_IMAGE}:${FEDORA_MAJOR_VERSION}"
 FROM ${BUILDER_BASE} AS builder
 
 # allow pinning to a specific release series (eg, 2.2.x or 2.3.x)
-ARG ZFS_MINOR_VERSION="2.3"
+ARG ZFS_MINOR_VERSION="2.4"
 ARG ZFS_MINOR_VERSION="${ZFS_MINOR_VERSION}"
 
 
